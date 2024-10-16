@@ -209,12 +209,22 @@ class SmsRetrieverPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
             "startSmsListener" -> {
                 pendingResult = result
                 smsReceiver = SmsBroadcastReceiver()
-                mContext.registerReceiver(
-                        smsReceiver,
-                        IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION),
-                        SmsRetriever.SEND_PERMISSION,
-                        null,
-                )
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+     mContext.registerReceiver(
+         smsReceiver,  
+         IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION), 
+         SmsRetriever.SEND_PERMISSION,
+         null,
+         RECEIVER_EXPORTED
+    )
+}else {
+     mContext.registerReceiver(
+         smsReceiver,
+         IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION),
+         SmsRetriever.SEND_PERMISSION,
+         null,
+    )
+}
                 SmsRetriever.getClient(mContext).startSmsRetriever()
             }
             "stopSmsListener" -> {
